@@ -19,6 +19,8 @@ import {
   type GiftPlan,
   type RankingSignals,
 } from "@giftops/shared";
+
+type ComposedCard = ComposePlanOutput["cards"][number];
 import { nowMs, elapsedMs } from "../utils/time.js";
 import type { GiftCatalogItem } from "../db/schema.js";
 
@@ -117,7 +119,7 @@ export async function runConciergePipeline(params: {
     const step1Start = nowMs();
     let extractOutput: unknown = null;
     try {
-      const { data } = await runStructured({
+      const { data } = await runStructured<ExtractedConstraints>({
         schemaName: "extract_constraints",
         schema: ExtractedConstraintsSchema,
         system: EXTRACT_SYSTEM,
@@ -179,7 +181,7 @@ export async function runConciergePipeline(params: {
       );
     } else {
       try {
-        const { data } = await runStructured({
+        const { data } = await runStructured<ClarifyOutput>({
           schemaName: "clarify",
           schema: ClarifyOutputSchema,
           system: CLARIFY_SYSTEM,
@@ -251,7 +253,7 @@ export async function runConciergePipeline(params: {
       acquisitionTypes: c.acquisitionTypes,
     }));
     try {
-      const { data } = await runStructured({
+      const { data } = await runStructured<GenerateIdeasOutput>({
         schemaName: "generate_ideas",
         schema: GenerateIdeasOutputSchema,
         system: GENERATE_SYSTEM,
@@ -279,7 +281,7 @@ export async function runConciergePipeline(params: {
     // Step 5: rank
     const step5Start = nowMs();
     try {
-      const { data } = await runStructured({
+      const { data } = await runStructured<RankIdeasOutput>({
         schemaName: "rank_ideas",
         schema: RankIdeasOutputSchema,
         system: RANK_SYSTEM,
@@ -291,7 +293,7 @@ export async function runConciergePipeline(params: {
         modelOverride: FAST_MODEL,
       });
       ranked = data;
-      decisionPanel.rankingSignals = data.rankingSignals;
+      decisionPanel.rankingSignals = data.rankingSignals as RankingSignals;
     } catch (e) {
       const err = e instanceof Error ? e.message : String(e);
       await logStep(run.id, "rank", step5Start, { ideaCount: generated.ideas.length }, null, err);
@@ -305,7 +307,7 @@ export async function runConciergePipeline(params: {
     const step6Start = nowMs();
     const rankedIdeas = ranked?.rankedIdeas ?? [];
     try {
-      const { data } = await runStructured({
+      const { data } = await runStructured<ComposePlanOutput>({
         schemaName: "compose_plan",
         schema: ComposePlanOutputSchema,
         system: COMPOSE_SYSTEM,
@@ -334,7 +336,7 @@ export async function runConciergePipeline(params: {
     const giftPlan: GiftPlan = composed
       ? {
           headline: composed.headline,
-          cards: composed.cards.map((c) => ({
+          cards: composed.cards.map((c: ComposedCard) => ({
             rank: c.rank,
             title: c.title,
             whyItFits: c.whyItFits,

@@ -2,7 +2,7 @@
   "name": "giftops-concierge",
   "private": true,
   "scripts": {
-    "build": "pnpm --filter @giftops/shared build",
+    "build": "pnpm --filter @giftops/shared build && pnpm --filter api build",
     "dev": "pnpm run build && pnpm run --parallel dev",
     "db:push": "pnpm --filter api db:push",
     "db:seed": "pnpm --filter api db:seed",

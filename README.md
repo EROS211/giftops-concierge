@@ -119,6 +119,15 @@ Copy `apps/api/.env.example` to `apps/api/.env` and set:
   pnpm-workspace.yaml
 ```
 
+## Deploy (Vercel – web app)
+
+To avoid **404 NOT_FOUND**, deploy from the **repository root** so the root `vercel.json` is used. It runs `pnpm --filter web build` and sets **Output Directory** to `apps/web/dist`. Do **not** set Vercel’s Root Directory to `apps/web` when using the root `vercel.json`; leave it at the repo root.
+
+- **Root Directory**: leave empty (repo root).
+- **Build Command** / **Output Directory**: overridden by root `vercel.json` (builds web, outputs `apps/web/dist`).
+
+The API is not deployed by this config; host it elsewhere (e.g. Railway, Render) and point the web app at that API URL if needed.
+
 ## Pipeline steps (all logged to run_steps)
 
 1. **extract** — From message → constraints (relationship, recipient, occasion, budget, timing, style, missingInfo).

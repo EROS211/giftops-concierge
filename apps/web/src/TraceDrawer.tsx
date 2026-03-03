@@ -1,25 +1,5 @@
 import { useState, useEffect } from "react";
-
-type RunStep = {
-  id: string;
-  stepName: string;
-  startedAt: string;
-  endedAt: string | null;
-  ms: number | null;
-  inputJson: unknown;
-  outputJson: unknown;
-  errorText: string | null;
-};
-
-type Run = {
-  id: string;
-  mode: string;
-  model: string;
-  totalMs: number | null;
-  promptVersion: string;
-};
-
-type RunTrace = { run: Run; steps: RunStep[] };
+import type { RunTrace } from "./api";
 
 type Props = {
   open: boolean;

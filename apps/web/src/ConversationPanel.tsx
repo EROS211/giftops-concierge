@@ -19,7 +19,6 @@ export function ConversationPanel({
   response,
 }: Props) {
   const [input, setInput] = useState("");
-  const [showSamples, setShowSamples] = useState(false);
   const listRef = useRef<HTMLDivElement>(null);
   const [clarifyInput, setClarifyInput] = useState("");
 
@@ -29,12 +28,10 @@ export function ConversationPanel({
     if (!text || loading) return;
     onSend(text);
     setInput("");
-    setShowSamples(false);
   };
 
   const handleSample = (text: string) => {
     setInput(text);
-    setShowSamples(false);
   };
 
   return (

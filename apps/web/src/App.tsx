@@ -36,7 +36,6 @@ export default function App() {
 
       const userMessages = messages.filter((m) => m.role === "user");
       const firstUserMessage = userMessages[0]?.content ?? "";
-      const lastUserMessage = userMessages.slice(-1)[0]?.content ?? "";
       const isClarifying = response?.nextAction === "ask_clarifying";
       const refine = isRefine ?? false;
       const clarificationAnswers = userMessages

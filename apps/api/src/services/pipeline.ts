@@ -22,6 +22,8 @@ import {
 import { nowMs, elapsedMs } from "../utils/time.js";
 import type { GiftCatalogItem } from "../db/schema.js";
 
+const FAST_MODEL = process.env.OPENAI_FAST_MODEL ?? "gpt-4o-mini";
+
 const EXTRACT_SYSTEM = `You are a gift-constraint extractor. From the user's message, extract structured fields. Output valid JSON only.
 - relationship: who is the recipient (e.g. sister, friend, mom)
 - recipientContext: short description (e.g. "3 month old baby", "loves coffee")
@@ -49,9 +51,10 @@ const GENERATE_SYSTEM = `You expand catalog items into tailored gift ideas for t
 - catalogItemId: optional, from the candidate if provided
 Output JSON: { "ideas": [ ... ] }. Include 8-12 ideas.`;
 
-const RANK_SYSTEM = `You rank gift ideas by fit. Score each 0-10 on: practicality, emotionalImpact, risk (lower = safer), speed (for last-minute).
-Output JSON: { "rankedIdeas": [ { rank, title, whyItFits, priceDisplay, acquisitionPaths, bundleAddOn?, score, rationale, practicality, emotionalImpact, risk, speed } ], "rankingSignals": { practicality, emotionalImpact, risk, speed } }.
-rankingSignals should be 0-10 aggregates. For last-minute mode, prefer higher speed and pickup/digital.`;
+const RANK_SYSTEM = `You rank up to 10 gift ideas by fit for the recipient.
+For each idea, score 0-10 on: practicality, emotionalImpact, risk (lower = safer), and speed (how fast it can be obtained).
+Return JSON: { "rankedIdeas": [ { rank, title, whyItFits, priceDisplay, acquisitionPaths, bundleAddOn?, score, rationale, practicality, emotionalImpact, risk, speed } ], "rankingSignals": { practicality, emotionalImpact, risk, speed } }.
+Keep each rationale brief (1-2 sentences). For last-minute mode, prefer pickup/digital options and higher speed.`;
 
 const COMPOSE_SYSTEM = `You turn ranked ideas into a final Gift Plan. Output JSON:
 - headline: one short headline for the plan
@@ -119,6 +122,7 @@ export async function runConciergePipeline(params: {
         schema: ExtractedConstraintsSchema,
         system: EXTRACT_SYSTEM,
         user: userMessage,
+        modelOverride: FAST_MODEL,
       });
       constraints = data;
       extractOutput = data;
@@ -183,6 +187,7 @@ export async function runConciergePipeline(params: {
             constraints: decisionPanel.constraints,
             missingInfo: constraints.missingInfo,
           }),
+          modelOverride: FAST_MODEL,
         });
         clarifyResult = data;
         if (data.shouldClarify && data.question) {
@@ -283,6 +288,7 @@ export async function runConciergePipeline(params: {
           ideas: generated.ideas,
           lastMinute: constraints.needFastOrAvailableTomorrow,
         }),
+        modelOverride: FAST_MODEL,
       });
       ranked = data;
       decisionPanel.rankingSignals = data.rankingSignals;

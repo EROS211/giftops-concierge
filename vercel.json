@@ -1,7 +1,7 @@
 {
   "buildCommand": "pnpm install && pnpm --filter @giftops/shared build && pnpm --filter api build && pnpm --filter web build",
   "outputDirectory": "apps/web/dist",
-  "installCommand": "pnpm install",
+  "installCommand": "pnpm install --no-frozen-lockfile",
   "rewrites": [
     { "source": "/v1/:path*", "destination": "/api/v1/:path*" },
     { "source": "/((?!v1/).*)", "destination": "/index.html" }

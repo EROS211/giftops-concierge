@@ -119,14 +119,14 @@ Copy `apps/api/.env.example` to `apps/api/.env` and set:
   pnpm-workspace.yaml
 ```
 
-## Deploy (Vercel – web app)
+## Deploy (Vercel – frontend + API together)
 
 To avoid **404 NOT_FOUND**, deploy from the **repository root** so the root `vercel.json` is used. It runs `pnpm --filter web build` and sets **Output Directory** to `apps/web/dist`. Do **not** set Vercel’s Root Directory to `apps/web` when using the root `vercel.json`; leave it at the repo root.
 
 - **Root Directory**: leave empty (repo root).
-- **Build Command** / **Output Directory**: overridden by root `vercel.json` (builds web, outputs `apps/web/dist`).
+- **Env vars**: `DATABASE_URL` (Postgres), `OPENAI_API_KEY`; optional: `OPENAI_MODEL`, `OPENAI_FAST_MODEL`. Then run `pnpm --filter api db:push` and `pnpm --filter api db:seed` against that DB.
 
-The API is not deployed by this config; host it elsewhere (e.g. Railway, Render) and point the web app at that API URL if needed.
+**Optional:** If you host the API on a different domain, set **`VITE_API_URL`** to that origin so the frontend calls it for `/v1/*`.
 
 ## Pipeline steps (all logged to run_steps)
 

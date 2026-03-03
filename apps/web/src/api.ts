@@ -1,6 +1,10 @@
 import type { ConciergeRunRequest, ConciergeRunResponse } from "@giftops/shared";
 
-const API = "/v1";
+/** API base URL (origin only). Set VITE_API_URL in production to your deployed API. Leave unset for dev (uses same origin + Vite proxy). */
+const API_BASE = typeof import.meta.env.VITE_API_URL === "string" && import.meta.env.VITE_API_URL !== ""
+  ? import.meta.env.VITE_API_URL.replace(/\/$/, "")
+  : "";
+const API = `${API_BASE}/v1`;
 
 export type RunStep = {
   id: string;

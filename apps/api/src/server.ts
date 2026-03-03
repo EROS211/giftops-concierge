@@ -15,7 +15,12 @@ app.use(conciergeRouter);
 app.use(runsRouter);
 app.use(conversationsRouter);
 
-const PORT = Number(process.env.PORT) || 3001;
-app.listen(PORT, () => {
-  console.log(`API listening on http://localhost:${PORT}`);
-});
+// Only listen when not on Vercel (serverless handles requests)
+if (!process.env.VERCEL) {
+  const PORT = Number(process.env.PORT) || 3001;
+  app.listen(PORT, () => {
+    console.log(`API listening on http://localhost:${PORT}`);
+  });
+}
+
+export default app;

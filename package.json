@@ -1,6 +1,7 @@
 {
   "name": "giftops-concierge",
   "private": true,
+  "type": "module",
   "scripts": {
     "build": "pnpm --filter @giftops/shared build && pnpm --filter api build",
     "dev": "pnpm run build && pnpm run --parallel dev",

@@ -87,7 +87,7 @@ export function ConversationPanel({
             <p className="mt-1">{response.clarifyingQuestion.question}</p>
             {response.clarifyingQuestion.options?.length ? (
               <ul className="mt-2 space-y-1">
-                {response.clarifyingQuestion.options.map((opt, j) => (
+                {response.clarifyingQuestion.options.map((opt: string, j: number) => (
                   <li key={j}>
                     <button
                       type="button"

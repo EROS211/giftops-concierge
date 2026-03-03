@@ -1,4 +1,4 @@
-import type { ConciergeRunResponse } from "@giftops/shared";
+import type { ConciergeRunResponse, GiftPlan } from "@giftops/shared";
 
 type Props = {
   response: ConciergeRunResponse | null;
@@ -40,7 +40,7 @@ export function GiftPlanView({ response, onRefine }: Props) {
     <div className="space-y-6">
       <h2 className="font-display font-semibold text-xl text-stone-800">{plan.headline}</h2>
       <div className="grid gap-4">
-        {plan.cards.map((card) => (
+        {plan.cards.map((card: GiftPlan["cards"][number]) => (
           <div
             key={card.rank}
             className="bg-white rounded-xl border border-stone-200 p-4 shadow-sm"
@@ -52,7 +52,7 @@ export function GiftPlanView({ response, onRefine }: Props) {
                 <p className="text-sm text-stone-600 mt-1">{card.whyItFits}</p>
                 <p className="text-sm font-medium text-stone-700 mt-1">{card.price}</p>
                 <ul className="text-xs text-stone-500 mt-1 space-y-0.5">
-                  {card.acquisitionPaths.map((path, i) => (
+                  {card.acquisitionPaths.map((path: string, i: number) => (
                     <li key={i}>• {path}</li>
                   ))}
                 </ul>
@@ -72,7 +72,7 @@ export function GiftPlanView({ response, onRefine }: Props) {
         <div className="bg-stone-100 rounded-xl border border-stone-200 p-4">
           <h3 className="font-medium text-stone-800 text-sm">Ready-to-buy combos</h3>
           <ul className="mt-2 space-y-1 text-sm text-stone-700">
-            {plan.combos.map((combo, i) => (
+            {plan.combos.map((combo: string, i: number) => (
               <li key={i}>• {combo}</li>
             ))}
           </ul>
@@ -82,7 +82,7 @@ export function GiftPlanView({ response, onRefine }: Props) {
         <div className="bg-amber-50/50 rounded-xl border border-amber-100 p-4">
           <h3 className="font-medium text-amber-900 text-sm">Checklist</h3>
           <ul className="mt-2 space-y-1 text-sm text-amber-800">
-            {plan.checklist.map((item, i) => (
+            {plan.checklist.map((item: string, i: number) => (
               <li key={i} className="flex items-center gap-2">
                 <span className="text-amber-600">◦</span> {item}
               </li>

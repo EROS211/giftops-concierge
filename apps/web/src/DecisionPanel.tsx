@@ -36,7 +36,7 @@ export function DecisionPanel({ response }: Props) {
         <section>
           <h4 className="font-medium text-stone-600 uppercase text-xs mb-2">Assumptions</h4>
           <ul className="list-disc list-inside text-stone-700 space-y-0.5">
-            {decisionPanel.assumptions.map((a, i) => (
+            {decisionPanel.assumptions.map((a: string, i: number) => (
               <li key={i}>{a}</li>
             ))}
           </ul>
@@ -59,7 +59,7 @@ export function DecisionPanel({ response }: Props) {
         <section>
           <h4 className="font-medium text-stone-600 uppercase text-xs mb-2">Safety checks</h4>
           <ul className="list-disc list-inside text-stone-700 space-y-0.5">
-            {decisionPanel.safetyChecks.map((s, i) => (
+            {decisionPanel.safetyChecks.map((s: string, i: number) => (
               <li key={i}>{s}</li>
             ))}
           </ul>
